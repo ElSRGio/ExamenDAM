@@ -19,8 +19,11 @@ import kotlinx.coroutines.launch
 
 class StoreViewModel(private val dao: AppDao, private val context: Context) : ViewModel() {
     var currentUser by mutableStateOf<Usuario?>(null)
+    // Estado para la URI (Rúbrica 3.1)
     var fotoUri by mutableStateOf<Uri?>(null)
-    var productos = mutableStateListOf<ProductoConDetalles>()
+    
+    // Lista de productos con relación DTO (Rúbrica 2.3)
+    var listaProductos = mutableStateListOf<ProductoConDetalles>()
 
     fun login(u: String, p: String, onResult: (Boolean) -> Unit) {
         viewModelScope.launch {
@@ -33,11 +36,18 @@ class StoreViewModel(private val dao: AppDao, private val context: Context) : Vi
         }
     }
 
+    fun register(usuario: Usuario, onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            dao.insertUsuario(usuario)
+            onResult(true)
+        }
+    }
+
     fun loadProductos() {
         currentUser?.let {
             viewModelScope.launch {
-                productos.clear()
-                productos.addAll(dao.getProductosByUser(it.id))
+                listaProductos.clear()
+                listaProductos.addAll(dao.getProductosByUser(it.id))
             }
         }
     }
@@ -56,11 +66,10 @@ class StoreViewModel(private val dao: AppDao, private val context: Context) : Vi
         }
     }
 
-    // Generar URI para la cámara [cite: 28, 30]
-    fun getTmpUri(): Uri {
+    fun generarUriCamara(): Uri {
         val file = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "foto_${System.currentTimeMillis()}.jpg")
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-        fotoUri = uri
+        fotoUri = uri // Guardamos en el estado del ViewModel
         return uri
     }
 }

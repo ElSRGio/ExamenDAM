@@ -3,45 +3,42 @@ package com.example.prueba1
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.prueba1.ui.theme.Prueba1Theme
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import com.example.prueba1.database.AppDatabase
+import com.example.prueba1.screens.CrearProductoScreen
+import com.example.prueba1.screens.HomeScreen
+import com.example.prueba1.screens.LoginScreen
+import com.example.prueba1.screens.RegisterScreen
+import com.example.prueba1.viewmodel.StoreViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        
+        // Inicialización de la DB
+        val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "tienda_db").build()
+        val dao = db.appDao()
+        
         setContent {
-            Prueba1Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            val navController = rememberNavController()
+            val vm: StoreViewModel = viewModel(factory = object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return StoreViewModel(dao, applicationContext) as T
                 }
+            })
+
+            NavHost(navController = navController, startDestination = "login") {
+                composable("login") { LoginScreen(vm, navController) }
+                composable("register") { RegisterScreen(vm, navController) }
+                composable("home") { HomeScreen(vm, navController) }
+                composable("crear") { CrearProductoScreen(vm, navController) }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Prueba1Theme {
-        Greeting("Android")
     }
 }
