@@ -1,5 +1,14 @@
 package com.example.prueba1.dao
 
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
+import com.example.prueba1.entiy.Categoria
+import com.example.prueba1.entiy.Producto
+import com.example.prueba1.entiy.ProductoConDetalles
+import com.example.prueba1.entiy.Usuario
+
 @Dao
 interface AppDao {
     @Insert suspend fun insertUsuario(usuario: Usuario)
