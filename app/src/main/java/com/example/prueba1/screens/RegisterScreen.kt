@@ -21,23 +21,27 @@ import com.example.prueba1.viewmodel.StoreViewModel
 
 @Composable
 fun RegisterScreen(vm: StoreViewModel, navController: NavController) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
+    var usernameText by remember { mutableStateOf("") }
+    var passwordText by remember { mutableStateOf("") }
+    var emailText by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        TextField(value = username, onValueChange = { username = it }, label = { Text("Usuario") })
+        TextField(value = usernameText, onValueChange = { usernameText = it }, label = { Text("Usuario") })
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = password, onValueChange = { password = it }, label = { Text("Contraseña") })
+        TextField(value = passwordText, onValueChange = { passwordText = it }, label = { Text("Contraseña") })
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
+        TextField(value = emailText, onValueChange = { emailText = it }, label = { Text("Email") })
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
-            val usuario = Usuario(username = username, password = password, email = email)
+            val usuario = Usuario(
+                username = usernameText,
+                password = passwordText,
+                email = emailText
+            )
             vm.register(usuario) { success ->
                 if (success) {
                     navController.navigate("login") {

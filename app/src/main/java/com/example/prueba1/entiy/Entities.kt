@@ -5,9 +5,9 @@ import androidx.room.*
 @Entity(tableName = "usuarios")
 data class Usuario(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val username: String,
-    val password: String,
-    val email: String
+    @ColumnInfo(name = "username") val username: String,
+    @ColumnInfo(name = "password") val password: String,
+    @ColumnInfo(name = "email") val email: String
 )
 
 @Entity(tableName = "categorias")
@@ -21,18 +21,19 @@ data class Categoria(
     foreignKeys = [
         ForeignKey(entity = Usuario::class, parentColumns = ["id"], childColumns = ["usuarioId"], onDelete = ForeignKey.CASCADE),
         ForeignKey(entity = Categoria::class, parentColumns = ["id"], childColumns = ["categoriaId"], onDelete = ForeignKey.CASCADE)
-    ]
+    ],
+    indices = [Index(value = ["usuarioId"]), Index(value = ["categoriaId"])]
 )
 data class Producto(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val nombre: String,
     val descripcion: String,
-    val fotoPath: String?,
+    @ColumnInfo(name = "fotoPath") val fotoPath: String?,
     val categoriaId: Int,
     val usuarioId: Int
 )
 
-// DTO para relación [cite: 36, 48]
+// Objeto de Transferencia de Datos (DTO) para la relación
 data class ProductoConDetalles(
     @Embedded val producto: Producto,
     @Relation(parentColumn = "categoriaId", entityColumn = "id")
