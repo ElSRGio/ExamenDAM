@@ -1,13 +1,17 @@
 package com.example.prueba1.entiy
 
-import androidx.room.*
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 
 @Entity(tableName = "usuarios")
 data class Usuario(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo(name = "username") val username: String,
-    @ColumnInfo(name = "password") val password: String,
-    @ColumnInfo(name = "email") val email: String
+    val username: String,
+    val password: String,
+    val email: String
 )
 
 @Entity(tableName = "categorias")
@@ -21,19 +25,20 @@ data class Categoria(
     foreignKeys = [
         ForeignKey(entity = Usuario::class, parentColumns = ["id"], childColumns = ["usuarioId"], onDelete = ForeignKey.CASCADE),
         ForeignKey(entity = Categoria::class, parentColumns = ["id"], childColumns = ["categoriaId"], onDelete = ForeignKey.CASCADE)
-    ],
-    indices = [Index(value = ["usuarioId"]), Index(value = ["categoriaId"])]
+    ]
 )
 data class Producto(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val nombre: String,
     val descripcion: String,
-    @ColumnInfo(name = "fotoPath") val fotoPath: String?,
+    val precio: Double,
+    val tipo: String,
+    val fotoPath: String?,
     val categoriaId: Int,
     val usuarioId: Int
 )
 
-// Objeto de Transferencia de Datos (DTO) para la relación
+// DTO para cumplir la rúbrica de @Relation
 data class ProductoConDetalles(
     @Embedded val producto: Producto,
     @Relation(parentColumn = "categoriaId", entityColumn = "id")

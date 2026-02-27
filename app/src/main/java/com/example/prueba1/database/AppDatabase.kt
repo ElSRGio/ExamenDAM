@@ -7,7 +7,8 @@ import com.example.prueba1.entiy.Categoria
 import com.example.prueba1.entiy.Producto
 import com.example.prueba1.entiy.Usuario
 
-@Database(entities = [Usuario::class, Categoria::class, Producto::class], version = 1)
+// ¡AQUÍ ESTÁ LA MAGIA! Cambiamos version = 1 a version = 2
+@Database(entities = [Usuario::class, Categoria::class, Producto::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun appDao(): AppDao
 }

@@ -11,19 +11,27 @@ import com.example.prueba1.entiy.Usuario
 
 @Dao
 interface AppDao {
-    // Registro e Inicio de sesión real (Rúbrica 1.1)
-    @Insert suspend fun insertUsuario(usuario: Usuario): Long
+    @Insert
+    suspend fun insertUsuario(usuario: Usuario)
+
     @Query("SELECT * FROM usuarios WHERE username = :user AND password = :pass LIMIT 1")
     suspend fun login(user: String, pass: String): Usuario?
 
-    @Insert suspend fun insertCategoria(categoria: Categoria): Long
-    @Query("SELECT * FROM categorias")
-    suspend fun getCategorias(): List<Categoria>
+    @Insert
+    suspend fun insertCategoria(categoria: Categoria)
 
-    // Relación de productos con Usuario y Categoría (Rúbrica 2.3)
-    @Insert suspend fun insertProducto(producto: Producto): Long
-    
+    @Insert
+    suspend fun insertProducto(producto: Producto)
+
     @Transaction
     @Query("SELECT * FROM productos WHERE usuarioId = :userId")
     suspend fun getProductosByUser(userId: Int): List<ProductoConDetalles>
+    @androidx.room.Delete
+    suspend fun deleteProducto(producto: Producto)
+
+    @androidx.room.Update
+    suspend fun updateProducto(producto: Producto)
+
+    @Query("SELECT * FROM productos WHERE id = :id LIMIT 1")
+    suspend fun getProductoById(id: Int): Producto?
 }

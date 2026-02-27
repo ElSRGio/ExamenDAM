@@ -1,55 +1,62 @@
 package com.example.prueba1.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.prueba1.R
 import com.example.prueba1.viewmodel.StoreViewModel
 
 @Composable
 fun LoginScreen(vm: StoreViewModel, navController: NavController) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var user by remember { mutableStateOf("") }
+    var pass by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        TextField(value = username, onValueChange = { username = it }, label = { Text("Usuario") })
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = password, onValueChange = { password = it }, label = { Text("Contraseña") })
+        // --- LOGO ---
+        Image(
+            painter = painterResource(id = R.drawable.logo), // Asegúrate de que tu imagen se llame logo.png
+            contentDescription = "Logo de la Tienda",
+            modifier = Modifier
+                .size(150.dp)
+                .padding(bottom = 16.dp)
+        )
+
+        Text("Acceso al Sistema", style = MaterialTheme.typography.headlineSmall)
         Spacer(modifier = Modifier.height(16.dp))
+
+        TextField(value = user, onValueChange = { user = it }, label = { Text("Usuario") })
+        Spacer(modifier = Modifier.height(8.dp))
+        TextField(
+            value = pass,
+            onValueChange = { pass = it },
+            label = { Text("Contraseña") },
+            visualTransformation = PasswordVisualTransformation()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
         Button(onClick = {
-            vm.login(username, password) { success ->
-                if (success) {
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                }
+            vm.login(user, pass) { success ->
+                if (success) navController.navigate("home")
             }
         }) {
             Text("Iniciar Sesión")
         }
+
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { navController.navigate("register") }) {
-            Text("Registrarse")
+
+        TextButton(onClick = { navController.navigate("register") }) {
+            Text("¿No tienes cuenta? Regístrate")
         }
     }
 }
